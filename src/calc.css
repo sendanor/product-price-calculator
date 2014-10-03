@@ -9,20 +9,18 @@ body {
 }
 
 .price-calculator {
-	margin: 3em 10em 5em 10em;
+	margin: 3em 0 5em 0;
 }
 
 .price-calculator .value {
 	text-align: right;
 	border: 0;
-	color: #f6931f;
 	font-weight: bold;
 	width: 100%;
 }
 
 .price-calculator .value-container {
 	text-align: right;
-	width: 100%;
 }
 
 .price-calculator .result-container {
