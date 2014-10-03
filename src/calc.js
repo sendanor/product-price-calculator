@@ -1,6 +1,22 @@
 
+/** Returns the string presentation of value */
+function cpu_int_to_decimal(v) {
+	if(v === -2) { return 0.1; }
+	if(v === -1) { return 0.2; }
+	if(v === 0) { return 0.5; }
+	return v;
+}
+
+/** Returns the string presentation of value */
+function cpu_decimal_to_int(v) {
+	if(v <= 0.1) { return -2; }
+	if(v <= 0.2) { return -1; }
+	if(v <= 0.0) { return 0; }
+	return v;
+}
+
 /** */
-function get_vps_price(cpu, mem, disk, support, callp) {
+function get_vps_price(provider, cpu, mem, disk, support, callp) {
 	var c = parseInt(cpu.value, 10);
 	if(c === -2) { c = 0.1; }
 	else if(c === -1) { c = 0.2; }
@@ -14,7 +30,7 @@ function get_vps_price(cpu, mem, disk, support, callp) {
 
 	return $.ajax({
 		dataType: "json",
-		url: 'https://sendanor.rest/products/vps?cpu='+c+'&mem='+m+'&disk='+d+'&support='+s,
+		url: 'https://sendanor.rest/products/vps?provider='+provider+'&cpu='+c+'&mem='+m+'&disk='+d+'&support='+s,
 		data: {},
 		cache: false
 	}).done(function success_handler(data) {
@@ -41,6 +57,14 @@ CPU.prototype.getValue = function() {
 	if(this.value === -1) { return "1/5 CPU"; }
 	if(this.value === 0) { return "1/2 CPU"; }
 	return "" + this.value + " CPU";
+};
+
+/** Returns the string presentation of value */
+CPU.prototype.getDecimal = function() {
+	if(this.value === -2) { return 0.1; }
+	if(this.value === -1) { return 0.2; }
+	if(this.value === 0) { return 0.5; }
+	return this.value;
 };
 
 /** Memory */
@@ -133,7 +157,62 @@ function enable_slider(elem, param, update_data) {
 }
 
 /** */
-function enable_calc(elem) {
+function update_providers(elem, data) {
+	var select = $(elem).find('select.provider');
+	var selected = $(select).val();
+	$(select).empty();
+	data.providers.forEach(function(p) {
+		$(select).append( (p === selected) ? $('<option selected>').text(p) : $('<option>').text(p) );
+	});
+	return selected;
+}
+
+/** */
+function refresh_slider(code, slider, min, max, step) {
+
+	console.log('min = ' + min + ' max = ' + max + ' step = ' + step);
+
+	if( (!slider) || (slider && (slider.length === 0)) ) {
+		console.log('slider not found');
+		return;
+	}
+
+	var value = $(slider).slider("option", "value");
+	console.log('value = ' + JSON.stringify(value, null, 2) );
+
+	if(code === "cpu") {
+		value = cpu_int_to_decimal(value);
+	}
+
+	$(slider).slider("option", "min", cpu_decimal_to_int(min));
+	$(slider).slider("option", "max", cpu_decimal_to_int(max));
+
+	if(step !== undefined) {
+		$(slider).slider("option", "step", step);
+	}
+
+	if(value < min) {
+		$(slider).slider("option", "value", cpu_decimal_to_int(min) );
+	}
+
+	if(value > max) {
+		$(slider).slider("option", "value", cpu_decimal_to_int(max) );
+	}
+
+	// this is an ugly workaround, but triggers the change event
+	$(slider).slider("value", $(slider).slider("value"));
+
+	//var values = $(slider).slider("values");
+	//$(slider).slider("values", values);
+
+	//$(slider).slider("refresh");
+}
+
+/** */
+function enable_calc(elem, provider) {
+
+	provider = provider || 'fsol';
+
 	var cpu = new CPU();
 	var mem = new Mem();
 	var disk = new Disk();
@@ -148,28 +227,67 @@ function enable_calc(elem) {
 		}
 
 		_lock = true;
+
 		$(elem).find('.result').prepend($('<i class="fa fa-spinner fa-spin">'));
-		var orig_state = [cpu.value, mem.value, disk.value, disk.support].join('-');
-		get_vps_price(cpu, mem, disk, support, function(err, data) {
+		var orig_state = [provider, cpu.value, mem.value, disk.value, disk.support].join('-');
+
+		var select_provider = $(elem).find('select.provider');
+
+		if( select_provider.length ) {
+			provider = $(select_provider).val();
+		}
+
+		get_vps_price(provider, cpu, mem, disk, support, function(err, data) {
 			try {
 				if(err) {
 					//debug.error(err);
 					return;
 				}
 
+				if(data.providers) {
+					update_providers(elem, data);
+				}
+
+				// Update limits
+				if(data.limits) {
+					cpu.min = data.limits.cpu_min;
+					cpu.max = data.limits.cpu_max;
+					mem.min = data.limits.mem_min;
+					mem.max = data.limits.mem_max;
+					mem.step = data.limits.mem_step;
+					disk.min = data.limits.disk_min;
+					disk.max = data.limits.disk_max;
+					disk.step = data.limits.disk_step;
+					support.min = data.limits.support_min;
+					support.max = data.limits.support_max;
+
+					refresh_slider( "cpu", $(elem).find('.cpu-slider'), cpu.min, cpu.max );
+					refresh_slider( "mem", $(elem).find('.mem-slider'), mem.min, mem.max, mem.step );
+					refresh_slider( "disk", $(elem).find('.disk-slider'), disk.min, disk.max, disk.step );
+					refresh_slider( "support", $(elem).find('.support-slider'), support.max, support.min );
+					update_data();
+				}
+
 				//debug.assert(data).is('object');
 				//debug.assert(data.monthly_fee).is('number');
-				$(elem).find('.result').text('Virtuaalipalvelin '+
+				$(elem).find('.result').text('Virtuaalipalvelin@'+
+					data.provider + ' -- '+
 					data.cpu + ' CPU, '+
 					data.mem + ' MB, '+
 					data.disk + ' GB, '+
 					data.support + '. luokka -- '+
 					data.monthly_fee + ' €/kk');
+
+				// Update data if provider is changed
+				$(elem).find('select.provider').one("change", function() {
+					update_data();
+				});
+
 			} finally {
 				_lock = false;
 
 				// Check again if state has changed
-				var new_state = [cpu.value, mem.value, disk.value, disk.support].join('-');
+				var new_state = [provider, cpu.value, mem.value, disk.value, disk.support].join('-');
 				if(orig_state !== new_state) {
 					update_data();
 				}
@@ -181,6 +299,7 @@ function enable_calc(elem) {
 	enable_slider(elem, mem, update_data );
 	enable_slider(elem, disk, update_data );
 	enable_slider(elem, support, update_data );
+
 }
 
 $(function() {
