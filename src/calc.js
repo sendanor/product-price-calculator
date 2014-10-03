@@ -1,4 +1,12 @@
 
+var _translations = {
+	"provider-unknown": "Toimittaja tuntematon.",
+	"invalid-input-cpu": "CPU:n arvo virheellinen.",
+	"invalid-input-mem": "Muistin arvo virheellinen.",
+	"invalid-input-disk": "Levytilan arvo virheellinen.",
+	"invalid-input-support": "Tuen arvo virheellinen."
+};
+
 /** Returns the string presentation of value */
 function cpu_int_to_decimal(v) {
 	if(v === -2) { return 0.1; }
@@ -37,6 +45,8 @@ function get_vps_price(provider, cpu, mem, disk, support, callp) {
 		//debug.assert(data).is('object');
 		//console.log('data = ' + JSON.stringify(data));
 		callp(undefined, data);
+	}).fail(function reject_handler(data) {
+		callp(data && ((data.responseJSON && data.responseJSON.error) || data.statusText) || 'ajax-error');
 	});
 
 }
@@ -241,6 +251,7 @@ function enable_calc(elem, provider) {
 			try {
 				if(err) {
 					//debug.error(err);
+					$(elem).find('.result').text('Virhe: ' + (_translations.hasOwnProperty(err) ? _translations[err] : err) );
 					return;
 				}
 
