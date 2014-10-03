@@ -30,7 +30,7 @@ function CPU() {
 	this.code = "cpu";
 	this.name = "CPU";
 	this.min = -2;
-	this.max = 2;
+	this.max = 8;
 	this.step = 1;
 	this.value = this.min;
 }
@@ -48,7 +48,7 @@ function Mem() {
 	this.code = "mem";
 	this.name = "Muisti (MB)";
 	this.min = 256;
-	this.max = 1024*2;
+	this.max = 1024*32;
 	this.step = 128;
 	this.value = this.min;
 }
@@ -139,19 +139,19 @@ function enable_calc(elem) {
 	var disk = new Disk();
 	var support = new Support();
 
-	var updating = false;
+	var _lock = false;
 
 	function update_data() {
 
-		if(updating) {
+		if(_lock) {
 			return;
 		}
 
-		updating = true;
-
+		_lock = true;
+		$(elem).find('.result').prepend($('<i class="fa fa-spinner fa-spin">'));
+		var orig_state = [cpu.value, mem.value, disk.value, disk.support].join('-');
 		get_vps_price(cpu, mem, disk, support, function(err, data) {
 			try {
-
 				if(err) {
 					//debug.error(err);
 					return;
@@ -159,19 +159,22 @@ function enable_calc(elem) {
 
 				//debug.assert(data).is('object');
 				//debug.assert(data.monthly_fee).is('number');
-
 				$(elem).find('.result').text('Virtuaalipalvelin '+
 					data.cpu + ' CPU, '+
 					data.mem + ' MB, '+
 					data.disk + ' GB, '+
 					data.support + '. luokka -- '+
 					data.monthly_fee + ' €/kk');
-
 			} finally {
-				updating = false;
+				_lock = false;
+
+				// Check again if state has changed
+				var new_state = [cpu.value, mem.value, disk.value, disk.support].join('-');
+				if(orig_state !== new_state) {
+					update_data();
+				}
 			}
 		});
-
 	}
 
 	enable_slider(elem, cpu, update_data );
