@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sendanor Price Calculator</title>
+  <link rel="stylesheet" href="libs/jquery-ui/jquery-ui-1.11.1/jquery-ui.css">
+  <script src="libs/jquery-1.10.2.js"></script>
+  <script src="libs/jquery-ui/jquery-ui-1.11.1/jquery-ui.min.js"></script>
+
+  <link rel="stylesheet" href="libs/purecss/pure-release-0.5.0/pure-min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="libs/fontawesome/font-awesome-4.2.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="calc.css">
+  <script src="calc.js"></script>
+</head>
+<body>
+
+<div class="header">
+	<a href="https://www.sendanor.fi"><img src="logo_336x63.png" alt="sendanor.fi"></a>
+</div>
+
+<div class="price-calculator">
+
+	<div class="cpu-container pure-g">
+
+		<div class="cpu-label-container pure-u-1-3">CPU</div>
+
+		<div class="cpu-slider-container pure-u-1-3">
+			<div class="cpu-slider" class="slider"></div>
+		</div>
+
+		<div class"cpu-value-container value-container pure-u-1-3">
+			<input type="text" class="cpu-value value" readonly style="border:0; color:#f6931f; font-weight:bold;">
+		</div>
+
+	</div>
+
+	<div class="mem-container pure-g">
+
+		<div class="mem-label-container pure-u-1-3">Muisti (MB)</div>
+
+		<div class="mem-slider-container pure-u-1-3">
+			<div class="mem-slider" class="slider"></div>
+		</div>
+
+		<div class"mem-value-container value-container pure-u-1-3">
+			<input type="text" class="mem-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="disk-container pure-g">
+
+		<div class="disk-label-container pure-u-1-3">Levytila (GB)</div>
+
+		<div class="disk-slider-container pure-u-1-3">
+			<div class="disk-slider" class="slider"></div>
+		</div>
+
+		<div class"disk-value-container value-container pure-u-1-3">
+			<input type="text" class="disk-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="support-container pure-g">
+
+		<div class="support-label-container pure-u-1-3">Tuki</div>
+
+		<div class="support-slider-container pure-u-1-3">
+			<div class="support-slider" class="slider"></div>
+		</div>
+
+		<div class"support-value-container value-container pure-u-1-3">
+			<input type="text" class="support-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="result-container">
+
+		<div class="result"></div>
+
+	</div>
+
+</div>
+
+<hr />
+
+<p>Hintoihin lisätään arvonlisävero (24%). Oikeus hintamuutoksiin varataan.</p>
+
+<p>Laskuri on koekäytössä ja siinä voi esiintyä virheitä. Tarkista lopullinen hinta <a href="https://www.sendanor.fi/contact/">asiakaspalvelustamme</a>.</p>
+
+ 
+</body>
+</html>
