@@ -282,7 +282,9 @@ function enable_calc(elem, provider) {
 				//debug.assert(data).is('object');
 				//debug.assert(data.monthly_fee).is('number');
 				$(elem).find('.result').text('Virtuaalipalvelin@'+
-					data.provider + ' -- '+
+					data.provider +
+					(data.model ? '/' + data.model : '') +
+					' -- '+
 					data.cpu + ' CPU, '+
 					data.mem + ' MB, '+
 					data.disk + ' GB, '+
