@@ -309,7 +309,8 @@ function enable_calc(elem, provider) {
 					' -- '+
 					data.cpu + ' CPU, '+
 					data.mem + ' MB, '+
-					data.disk + ' GB, verkko '+ data.net + ' GB, '+
+					data.disk + ' GB, '+
+					data.net + ' GB/kk, '+
 					data.support + '. luokka -- '+
 					data.monthly_fee + ' €/kk');
 
