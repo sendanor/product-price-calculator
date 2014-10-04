@@ -4,6 +4,7 @@ var _translations = {
 	"invalid-input-cpu": "CPU:n arvo virheellinen.",
 	"invalid-input-mem": "Muistin arvo virheellinen.",
 	"invalid-input-disk": "Levytilan arvo virheellinen.",
+	"invalid-input-net": "Verkkoliikenteen arvo virheellinen.",
 	"invalid-input-support": "Tuen arvo virheellinen."
 };
 
@@ -24,7 +25,7 @@ function cpu_decimal_to_int(v) {
 }
 
 /** */
-function get_vps_price(provider, cpu, mem, disk, support, callp) {
+function get_vps_price(provider, cpu, mem, disk, net, support, callp) {
 	var c = parseInt(cpu.value, 10);
 	if(c === -2) { c = 0.1; }
 	else if(c === -1) { c = 0.2; }
@@ -34,11 +35,12 @@ function get_vps_price(provider, cpu, mem, disk, support, callp) {
 
 	var m = parseInt( mem.value, 10);
 	var d = parseInt( disk.value, 10);
+	var n = parseInt( net.value, 10);
 	var s = parseInt( support.value, 10);
 
 	return $.ajax({
 		dataType: "json",
-		url: 'https://sendanor.rest/products/vps?provider='+provider+'&cpu='+c+'&mem='+m+'&disk='+d+'&support='+s,
+		url: 'https://sendanor.rest/products/vps?provider='+provider+'&cpu='+c+'&mem='+m+'&disk='+d+'&net='+n+'&support='+s,
 		data: {},
 		cache: false
 	}).done(function success_handler(data) {
@@ -104,6 +106,21 @@ function Disk() {
 
 /** Returns the string presentation of value */
 Disk.prototype.getValue = function() {
+	return "" + this.value + " GB";
+};
+
+/** Net */
+function Net() {
+	this.code = "net";
+	this.name = "Verkkoliikenne (GB)";
+	this.min = 1;
+	this.max = 100000;
+	this.step = 1;
+	this.value = 25;
+}
+
+/** Returns the string presentation of value */
+Net.prototype.getValue = function() {
 	return "" + this.value + " GB";
 };
 
@@ -226,6 +243,7 @@ function enable_calc(elem, provider) {
 	var cpu = new CPU();
 	var mem = new Mem();
 	var disk = new Disk();
+	var net = new Net();
 	var support = new Support();
 
 	var _lock = false;
@@ -239,7 +257,7 @@ function enable_calc(elem, provider) {
 		_lock = true;
 
 		$(elem).find('.result').prepend($('<i class="fa fa-spinner fa-spin">'));
-		var orig_state = [provider, cpu.value, mem.value, disk.value, disk.support].join('-');
+		var orig_state = [provider, cpu.value, mem.value, disk.value, net.value, support.value].join('-');
 
 		var select_provider = $(elem).find('select.provider');
 
@@ -247,7 +265,7 @@ function enable_calc(elem, provider) {
 			provider = $(select_provider).val();
 		}
 
-		get_vps_price(provider, cpu, mem, disk, support, function(err, data) {
+		get_vps_price(provider, cpu, mem, disk, net, support, function(err, data) {
 			try {
 				if(err) {
 					//debug.error(err);
@@ -269,12 +287,16 @@ function enable_calc(elem, provider) {
 					disk.min = data.limits.disk_min;
 					disk.max = data.limits.disk_max;
 					disk.step = data.limits.disk_step;
+					net.min = data.limits.net_min;
+					net.max = data.limits.net_max;
+					net.step = data.limits.net_step;
 					support.min = data.limits.support_min;
 					support.max = data.limits.support_max;
 
 					refresh_slider( "cpu", $(elem).find('.cpu-slider'), cpu.min, cpu.max );
 					refresh_slider( "mem", $(elem).find('.mem-slider'), mem.min, mem.max, mem.step );
 					refresh_slider( "disk", $(elem).find('.disk-slider'), disk.min, disk.max, disk.step );
+					refresh_slider( "net", $(elem).find('.net-slider'), net.min, net.max, net.step );
 					refresh_slider( "support", $(elem).find('.support-slider'), support.max, support.min );
 					update_data();
 				}
@@ -287,7 +309,7 @@ function enable_calc(elem, provider) {
 					' -- '+
 					data.cpu + ' CPU, '+
 					data.mem + ' MB, '+
-					data.disk + ' GB, '+
+					data.disk + ' GB, verkko '+ data.net + ' GB, '+
 					data.support + '. luokka -- '+
 					data.monthly_fee + ' €/kk');
 
@@ -300,7 +322,7 @@ function enable_calc(elem, provider) {
 				_lock = false;
 
 				// Check again if state has changed
-				var new_state = [provider, cpu.value, mem.value, disk.value, disk.support].join('-');
+				var new_state = [provider, cpu.value, mem.value, disk.value, net.value, support.value].join('-');
 				if(orig_state !== new_state) {
 					update_data();
 				}
@@ -311,6 +333,7 @@ function enable_calc(elem, provider) {
 	enable_slider(elem, cpu, update_data );
 	enable_slider(elem, mem, update_data );
 	enable_slider(elem, disk, update_data );
+	enable_slider(elem, net, update_data );
 	enable_slider(elem, support, update_data );
 
 }
