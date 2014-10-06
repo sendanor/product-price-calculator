@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <title>Virtuaalipalvelinten hintalaskuri</title>
+  <link rel="stylesheet" href="libs/jquery-ui/jquery-ui-1.11.1/jquery-ui.css">
+  <script src="libs/jquery-1.10.2.js"></script>
+  <script src="libs/jquery-ui/jquery-ui-1.11.1/jquery-ui.min.js"></script>
+
+  <link rel="stylesheet" href="libs/purecss/pure-release-0.5.0/pure-min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="libs/fontawesome/font-awesome-4.2.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="calc.css">
+  <script src="calc-fi.js"></script>
+  <script src="calc.js"></script>
+</head>
+<body>
+
+<a href="https://github.com/sendanor/product-price-calculator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+
+<div class="header">
+	<a href="https://www.sendanor.fi"><img src="logo_336x63.png" alt="sendanor.fi"></a>
+</div>
+
+<div class="price-calculator">
+
+	<div class="provider-container slider-container pure-g">
+		<div class="provider-label-container pure-u-1-5">VPS-toimittaja</div>
+		<div class="pure-u-3-5"><select class="provider"></select></div>
+		<div class="pure-u-1-5"></div>
+	</div>
+
+	<div class="cpu-container slider-container pure-g">
+
+		<div class="cpu-label-container pure-u-1-5">CPU</div>
+
+		<div class="cpu-slider-container pure-u-3-5">
+			<div class="cpu-slider" class="slider"></div>
+		</div>
+
+		<div class="cpu-value-container value-container pure-u-1-5">
+			<input type="text" class="cpu-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="mem-container slider-container pure-g">
+
+		<div class="mem-label-container pure-u-1-5">Muisti (MB)</div>
+
+		<div class="mem-slider-container pure-u-3-5">
+			<div class="mem-slider" class="slider"></div>
+		</div>
+
+		<div class="mem-value-container value-container pure-u-1-5">
+			<input type="text" class="mem-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="disk-container slider-container pure-g">
+
+		<div class="disk-label-container pure-u-1-5">Levytila (GB)</div>
+
+		<div class="disk-slider-container pure-u-3-5">
+			<div class="disk-slider" class="slider"></div>
+		</div>
+
+		<div class="disk-value-container value-container pure-u-1-5">
+			<input type="text" class="disk-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="net-container slider-container pure-g">
+
+		<div class="net-label-container pure-u-1-5">Verkkoliikenne (GB)</div>
+
+		<div class="net-slider-container pure-u-3-5">
+			<div class="net-slider" class="slider"></div>
+		</div>
+
+		<div class="net-value-container value-container pure-u-1-5">
+			<input type="text" class="net-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="support-container slider-container pure-g">
+
+		<div class="support-label-container pure-u-1-5">Sendanorin tuki</div>
+
+		<div class="support-slider-container pure-u-3-5">
+			<div class="support-slider" class="slider"></div>
+		</div>
+
+		<div class="support-value-container value-container pure-u-1-5">
+			<input type="text" class="support-value value" readonly>
+		</div>
+
+	</div>
+
+	<div class="result-container">
+
+		<div class="result"></div>
+
+	</div>
+
+</div>
+
+<p>Lue lisää uusista hinnoista <a href="https://www.sendanor.fi/2014/10/04/muutoksia-virtuaalipalvelimien-hinnoittelussa/">tiedotteestamme</a>.</p>
+
+<p>Kysy tarjous puuttuvasta kokoonpanosta tai tarkista lopullinen hinta <a href="https://www.sendanor.fi/contact/">asiakaspalvelustamme</a>.</p>
+
+<hr />
+
+<p>Hintoihin lisätään arvonlisävero (24%). Oikeus hintamuutoksiin varataan.</p>
+
+<p>Laskuri on koekäytössä ja siinä voi esiintyä virheitä tai kokoonpanoja, joita emme pysty tarjoamaan.</p>
+
+<hr />
+<p>Kielet: <a href="calc-fi.html">Finnish</a> - <a href="calc-en.html">English</a></p>
+
+</body>
+</html>

@@ -1,12 +1,16 @@
+/** The UI code for VPS pricing calculator */
+"use strict";
+(function(global) {
+$(function() {
 
-var _translations = {
-	"provider-unknown": "Toimittaja tuntematon.",
-	"invalid-input-cpu": "CPU:n arvo virheellinen.",
-	"invalid-input-mem": "Muistin arvo virheellinen.",
-	"invalid-input-disk": "Levytilan arvo virheellinen.",
-	"invalid-input-net": "Verkkoliikenteen arvo virheellinen.",
-	"invalid-input-support": "Tuen arvo virheellinen."
-};
+if(typeof global._translations === 'undefined') {
+	global._translations = {};
+}
+
+/** */
+function _(key) {
+	return '' + _translations.hasOwnProperty(key) ? _translations[key] : key;
+}
 
 /** Returns the string presentation of value */
 function cpu_int_to_decimal(v) {
@@ -56,7 +60,7 @@ function get_vps_price(provider, cpu, mem, disk, net, support, callp) {
 /** CPU */
 function CPU() {
 	this.code = "cpu";
-	this.name = "CPU";
+	this.name = _('label-cpu');
 	this.min = -2;
 	this.max = 8;
 	this.step = 1;
@@ -65,10 +69,10 @@ function CPU() {
 
 /** Returns the string presentation of value */
 CPU.prototype.getValue = function() {
-	if(this.value === -2) { return "1/10 CPU"; }
-	if(this.value === -1) { return "1/5 CPU"; }
-	if(this.value === 0) { return "1/2 CPU"; }
-	return "" + this.value + " CPU";
+	if(this.value === -2) { return "1/10 "+_('label-cpu'); }
+	if(this.value === -1) { return "1/5 "+_('label-cpu'); }
+	if(this.value === 0) { return "1/2 "+_('label-cpu'); }
+	return "" + this.value + " "+_('label-cpu');
 };
 
 /** Returns the string presentation of value */
@@ -82,7 +86,7 @@ CPU.prototype.getDecimal = function() {
 /** Memory */
 function Mem() {
 	this.code = "mem";
-	this.name = "Muisti (MB)";
+	this.name = _('label-mem');
 	this.min = 256;
 	this.max = 1024*32;
 	this.step = 128;
@@ -91,13 +95,13 @@ function Mem() {
 
 /** Returns the string presentation of value */
 Mem.prototype.getValue = function() {
-	return "" + this.value + " MB";
+	return "" + this.value + " "+_('label-mem-MB');
 };
 
 /** Disk */
 function Disk() {
 	this.code = "disk";
-	this.name = "Levytila (GB)";
+	this.name = _('label-disk');
 	this.min = 10;
 	this.max = 1000;
 	this.step = 1;
@@ -106,13 +110,13 @@ function Disk() {
 
 /** Returns the string presentation of value */
 Disk.prototype.getValue = function() {
-	return "" + this.value + " GB";
+	return "" + this.value + " "+_('label-disk-GB');
 };
 
 /** Net */
 function Net() {
 	this.code = "net";
-	this.name = "Verkkoliikenne (GB)";
+	this.name = _('label-net');
 	this.min = 1;
 	this.max = 100000;
 	this.step = 1;
@@ -121,13 +125,13 @@ function Net() {
 
 /** Returns the string presentation of value */
 Net.prototype.getValue = function() {
-	return "" + this.value + " GB";
+	return "" + this.value + " "+_('label-net-GB');
 };
 
 /** Support class */
 function Support() {
 	this.code = "support";
-	this.name = "Tuki";
+	this.name = _('label-support');
 	this.min = 1;
 	this.max = 3;
 	this.step = -1;
@@ -136,7 +140,7 @@ function Support() {
 
 /** Returns the string presentation of value */
 Support.prototype.getValue = function() {
-	return "" + this.value + ". luokka";
+	return "" + this.value + _('label-support-class');
 };
 
 /** */
@@ -269,7 +273,7 @@ function enable_calc(elem, provider) {
 			try {
 				if(err) {
 					//debug.error(err);
-					$(elem).find('.result').text('Virhe: ' + (_translations.hasOwnProperty(err) ? _translations[err] : err) );
+					$(elem).find('.result').text( _('error-pre-content') + _(err) );
 					return;
 				}
 
@@ -303,16 +307,16 @@ function enable_calc(elem, provider) {
 
 				//debug.assert(data).is('object');
 				//debug.assert(data.monthly_fee).is('number');
-				$(elem).find('.result').text('Virtuaalipalvelin@'+
+				$(elem).find('.result').text(''+_('product-pre-content')+
 					data.provider +
 					(data.model ? '/' + data.model : '') +
 					' -- '+
-					data.cpu + ' CPU, '+
-					data.mem + ' MB, '+
-					data.disk + ' GB, '+
-					data.net + ' GB/kk, '+
-					data.support + '. luokka -- '+
-					data.monthly_fee + ' €/kk');
+					data.cpu + ' '+_('label-cpu')+', '+
+					data.mem + ' '+_('label-mem-MB')+', '+
+					data.disk + ' '+_('label-disk-GB')+', '+
+					data.net + ' '+_('label-net-GB')+', '+
+					data.support + _('label-support-class') +' -- '+
+					data.monthly_fee + ' ' + _('eur-per-month'));
 
 				// Update data if provider is changed
 				$(elem).find('select.provider').one("change", function() {
@@ -339,6 +343,8 @@ function enable_calc(elem, provider) {
 
 }
 
-$(function() {
 	enable_calc(".price-calculator");
 });
+
+})(window);
+
