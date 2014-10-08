@@ -69,10 +69,10 @@ function CPU() {
 
 /** Returns the string presentation of value */
 CPU.prototype.getValue = function() {
-	if(this.value === -2) { return "1/10 "+_('label-cpu'); }
-	if(this.value === -1) { return "1/5 "+_('label-cpu'); }
-	if(this.value === 0) { return "1/2 "+_('label-cpu'); }
-	return "" + this.value + " "+_('label-cpu');
+	if(this.value === -2) { return 0.1; }
+	if(this.value === -1) { return 0.2; }
+	if(this.value === 0) { return 0.5; }
+	return "" + this.value;
 };
 
 /** Returns the string presentation of value */
@@ -95,7 +95,7 @@ function Mem() {
 
 /** Returns the string presentation of value */
 Mem.prototype.getValue = function() {
-	return "" + this.value + " "+_('label-mem-MB');
+	return "" + this.value;
 };
 
 /** Disk */
@@ -110,7 +110,7 @@ function Disk() {
 
 /** Returns the string presentation of value */
 Disk.prototype.getValue = function() {
-	return "" + this.value + " "+_('label-disk-GB');
+	return "" + this.value;
 };
 
 /** Net */
@@ -125,7 +125,7 @@ function Net() {
 
 /** Returns the string presentation of value */
 Net.prototype.getValue = function() {
-	return "" + this.value + " "+_('label-net-GB');
+	return "" + this.value;
 };
 
 /** Support class */
@@ -180,6 +180,13 @@ function enable_slider(elem, param, update_data) {
 			slide_fun(ui.value);
 			update_data();
 		}
+	});
+
+	$(value).change(function() {
+		var v = parseFloat( $(value).val() );
+		param.value = v;
+		$(slider).slider("value", param.getValue() );
+		update_data();
 	});
 
 	slide_fun( $(slider).slider( "value" ) );

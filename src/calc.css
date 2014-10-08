@@ -39,3 +39,8 @@ body {
 .provider-container .provider {
 	width: 100%;
 }
+
+.price-calculator .value-label {
+	text-align: center;
+	font-weight: bold;
+}
